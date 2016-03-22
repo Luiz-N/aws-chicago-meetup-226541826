@@ -179,7 +179,7 @@ describe('cats', function () {
                         functionName : 'cats',
                         request      : function() {return params;},
                         callback     : function(err, request, result, done) {
-                            //This is the context.callbackFunction!!!
+                            //This gets called in the context.callbackFunction!!!
                             done(err);
                         }
                     };
