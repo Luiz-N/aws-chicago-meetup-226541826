@@ -158,7 +158,7 @@ describe('cats', function () {
           });
     });
     describe('#overlyComplexUpdateNappingCats', function () {
-        it('should update all cats as fed', function (done) {
+        it('should update all cats as napping', function (done) {
             var params = {
                 operation: 'show',
                 TableName: 'cats'
