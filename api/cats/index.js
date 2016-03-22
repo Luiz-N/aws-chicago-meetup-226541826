@@ -1,6 +1,6 @@
 
 var AWS = require('aws-sdk');
-
+var async = require('async');
 
 var dynamoParams = {
     apiVersion: '2012-08-10',
@@ -30,19 +30,37 @@ exports.handler = function(event, context) {
 
     switch (operation) {
         case 'create':
-            dynamo.put(event, context.done);
+            dynamo.put(event, context.callbackFunction);
             break;
         case 'get':
-            dynamo.get(event, context.done);
+            dynamo.get(event, context.callbackFunction);
             break;
         case 'update':
-            dynamo.put(event, context.done);
+            dynamo.put(event, context.callbackFunction);
+            break;
+        case 'updateAll':
+            var items = [];
+            dynamo.scan(event, function(err, result) {
+                items = result.Items;
+                async.each(items, function (item, done) {
+                    var params = {
+                        TableName: 'cats',
+                        Item: {
+                            name: item.name,
+                            status: 'fed'
+                        }
+                    };
+                    dynamo.put(params, done);
+                }, function(err) {
+                    context.callbackFunction(err);
+                });
+            });
             break;
         case 'delete':
-            dynamo.delete(event, context.done);
+            dynamo.delete(event, context.callbackFunction);
             break;
-        case 'list':
-            dynamo.scan(event, context.done);
+        case 'show':
+            dynamo.scan(event, context.callbackFunction);
             break;
         case 'echo':
             context.succeed(event);

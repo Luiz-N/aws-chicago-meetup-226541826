@@ -17,6 +17,7 @@ LambdaMock.prototype.invoke = function (module, functionName, request, callback)
     var startTime = Date.now();
     // Serialize request so any writes to it aren't passed by reference back to the tests.
     var requestCopy = JSON.parse(JSON.stringify(request));
+    // This is the context object that gets passed into
     var context = {
         "awsRequestId": uuid.v4(),
         "invokeid": uuid.v4(),
@@ -26,7 +27,7 @@ LambdaMock.prototype.invoke = function (module, functionName, request, callback)
         "memoryLimitInMB": self.memory_size,
         "functionVersion": "HEAD",
         "isDefaultFunctionVersion": true,
-        done: callback,
+        callbackFunction: callback,
         succeed: function (result) { callback(null, result); },
         fail: function(err) { callback(err); },
         getRemainingTimeInMillis: function () { return Date.now() - startTime; }
@@ -53,7 +54,7 @@ LambdaMock.prototype.invokeSeries = function (calls, callback) {
 
 /*
  * Invoke a set of lambda calls in parallel. calls is an array of
- * objects with { moduel, functionName, request(), callback(err, request, result, done) } fields
+ * objects with { module, functionName, request(), callback(err, request, result, done) } fields
  */
 
 LambdaMock.prototype.invokeParallel = function (calls, callback) {

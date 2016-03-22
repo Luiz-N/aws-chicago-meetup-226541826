@@ -4,7 +4,7 @@
   "description": "Code for a talk on Lambda &amp; API Gateway at the Dec 2, 2015 AWS Chicago Meetup",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --timeout 30000",
+    "test": "NODE_ENV=test mocha --timeout 10000",
     "deploy": "AWS_REGION=us-west-2 node ./bin/deploy.js"
   },
   "repository": {
